@@ -1,6 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,xbmcaddon,socket
+import urllib
+import urllib2
+import re
+import xbmcplugin
+import xbmcgui
+import sys
+import xbmcaddon
+import socket
 
 socket.setdefaulttimeout(30)
 pluginhandle = int(sys.argv[1])

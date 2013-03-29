@@ -98,15 +98,15 @@ def listVideos(urlFull):
                 match = re.compile("<a href='(.+?)'>\n(.+?)<br />", re.DOTALL).findall(entry)
                 title = match[0][1]
             addLink(title, 'http://www.filmstarts.de' + url, "playVideo", get_better_thumb(thumb))
-    if currentPage<maxPage:
+    if currentPage < maxPage:
         urlNew = ""
         if mode == "listVideosTrailer":
-            sortNr = urlFull[urlFull.find('sort_order=')+11:]
+            sortNr = urlFull[urlFull.find('sort_order=') + 11:]
             sortNr = sortNr[:sortNr.find('&')]
-            urlNew = urlFull[:urlFull.find('?')] + "?page=" + str(currentPage + 1) + "&sort_order=" + sortNr+"&version=1"
+            urlNew = urlFull[:urlFull.find('?')] + "?page=" + str(currentPage + 1) + "&sort_order=" + sortNr + "&version=1"
         elif urlFull.find('?page=') >= 0 and (mode == "listVideosMagazin" or mode == "listVideosInterview" or mode == "listVideosTV"):
             match = re.compile('http://www.filmstarts.de/(.+?)?page=(.+?)', re.DOTALL).findall(urlFull)
-            urlNew = 'http://www.filmstarts.de/' + match[0][0] + 'page='+str(currentPage + 1)
+            urlNew = 'http://www.filmstarts.de/' + match[0][0] + 'page=' + str(currentPage + 1)
         elif urlFull.find('?page=') == -1 and (mode == "listVideosMagazin" or mode == "listVideosInterview" or mode == "listVideosTV"):
             urlNew = urlFull + "?page=" + str(currentPage + 1)
         addDir(translation(30007) + " (" + str(currentPage + 1) + ")", urlNew, mode, '')
@@ -131,7 +131,7 @@ def listTrailers(url):
             title = cleanTitle(title)
             match = re.compile('href="(.+?)"', re.DOTALL).findall(entry)
             if len(match) > 0:
-                url = "http://www.filmstarts.de"+match[0]
+                url = "http://www.filmstarts.de" + match[0]
                 addLink(title, url, 'playVideo', thumb)
     xbmcplugin.endOfDirectory(pluginhandle)
     if forceViewMode:
@@ -161,7 +161,7 @@ def search():
             title = match[0].replace("<b>", "").replace("</b>", "")
             title = cleanTitle(title)
             match = re.compile("href='(.+?)'", re.DOTALL).findall(entry)
-            url = "http://www.filmstarts.de"+match[0].replace(".html", "/trailers/")
+            url = "http://www.filmstarts.de" + match[0].replace(".html", "/trailers/")
             addDir(title, url, 'listTrailers', thumb)
         xbmcplugin.endOfDirectory(pluginhandle)
         if forceViewMode:
@@ -188,7 +188,7 @@ def playVideo(url):
         typeRef = match1[0]
     elif len(match2) > 0:
         typeRef = match2[0]
-    content = getUrl('http://www.filmstarts.de/ws/AcVisiondataV4.ashx?media=' + media+'&ref='+ref+'&typeref='+typeRef)
+    content = getUrl('http://www.filmstarts.de/ws/AcVisiondataV4.ashx?media=' + media + '&ref=' + ref + '&typeref=' + typeRef)
     finalUrl = ""
     match1 = re.compile('/nmedia/youtube:(.+?)"', re.DOTALL).findall(content)
     match2 = re.compile('hd_path="(.+?)"', re.DOTALL).findall(content)

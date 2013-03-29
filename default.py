@@ -15,12 +15,8 @@ xbox = xbmc.getCondVisibility("System.Platform.xbox")
 addon = xbmcaddon.Addon(id='plugin.video.filmstarts_de')
 translation = addon.getLocalizedString
 
-showAllTrailers = addon.getSetting("showAllTrailers")
-forceViewMode = addon.getSetting("forceViewMode")
-if forceViewMode == "true":
-    forceViewMode = True
-else:
-    forceViewMode = False
+showAllTrailers = addon.getSetting("showAllTrailers") == "true"
+forceViewMode = addon.getSetting("forceViewMode") == "true"
 viewMode = str(addon.getSetting("viewMode"))
 
 
@@ -66,7 +62,7 @@ def listVideos(urlFull):
     if mode == "listVideosTrailer":
         match = re.compile('<img src=\'(.+?)\' alt="(.+?)" title="(.+?)" />\n</span>\n</div>\n<div class="contenzone">\n<div class="titlebar">\n<a class="link" href="(.+?)">\n<span class=\'bold\'>(.+?)</span>', re.DOTALL).findall(content)
         for thumb, temp1, temp2, url, title in match:
-            if showAllTrailers == "true":
+            if showAllTrailers:
                 url = url[:url.find("/trailer/")] + "/trailers/"
                 addDir(title, 'http://www.filmstarts.de' + url, "listTrailers", get_better_thumb(thumb))
             else:

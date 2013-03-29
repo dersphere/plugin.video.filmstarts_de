@@ -34,7 +34,7 @@ def index():
     addDir('Meine Lieblings-Filmszene', 'http://www.filmstarts.de/videos/shows/meine-lieblings-filmszene', "listVideosMagazin", '')
     addDir('Serien-Trailer', 'http://www.filmstarts.de/trailer/serien/', "listVideosTV", '')
     xbmcplugin.endOfDirectory(pluginhandle)
-    if forceViewMode == True:
+    if forceViewMode:
         xbmc.executebuiltin('Container.SetViewMode(' + viewMode + ')')
 
 
@@ -44,7 +44,7 @@ def showSortDirection(url):
     addDir(translation(30005), url.replace("?version=1", "?sort_order=3&version=1"), "listVideosTrailer", '')
     addDir(translation(30006), url.replace("?version=1", "?sort_order=2&version=1"), "listVideosTrailer", '')
     xbmcplugin.endOfDirectory(pluginhandle)
-    if forceViewMode == True:
+    if forceViewMode:
         xbmc.executebuiltin('Container.SetViewMode(' + viewMode + ')')
 
 
@@ -111,7 +111,7 @@ def listVideos(urlFull):
             urlNew = urlFull + "?page=" + str(currentPage + 1)
         addDir(translation(30007) + " (" + str(currentPage + 1) + ")", urlNew, mode, '')
     xbmcplugin.endOfDirectory(pluginhandle)
-    if forceViewMode == True:
+    if forceViewMode:
         xbmc.executebuiltin('Container.SetViewMode(' + viewMode + ')')
 
 
@@ -134,7 +134,7 @@ def listTrailers(url):
                 url = "http://www.filmstarts.de"+match[0]
                 addLink(title, url, 'playVideo', thumb)
     xbmcplugin.endOfDirectory(pluginhandle)
-    if forceViewMode == True:
+    if forceViewMode:
         xbmc.executebuiltin('Container.SetViewMode(' + viewMode + ')')
 
 
@@ -164,7 +164,7 @@ def search():
             url = "http://www.filmstarts.de"+match[0].replace(".html", "/trailers/")
             addDir(title, url, 'listTrailers', thumb)
         xbmcplugin.endOfDirectory(pluginhandle)
-        if forceViewMode == True:
+        if forceViewMode:
             xbmc.executebuiltin('Container.SetViewMode(' + viewMode + ')')
 
 
@@ -202,7 +202,7 @@ def playVideo(url):
 
 
 def getYoutubeUrl(id):
-    if xbox == True:
+    if xbox:
         url = "plugin://video/YouTube/?path=/root/video&action=play_video&videoid=" + id
     else:
         url = "plugin://plugin.video.youtube/?path=/root/video&action=play_video&videoid=" + id

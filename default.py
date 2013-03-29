@@ -19,16 +19,18 @@ showAllTrailers = addon.getSetting("showAllTrailers") == "true"
 forceViewMode = addon.getSetting("forceViewMode") == "true"
 viewMode = str(addon.getSetting("viewMode"))
 
+BASE_URL = "http://www.filmstarts.de"
+
 
 def index():
     addDir('Trailer: ' + translation(30008), '', "search", '')
-    addDir('Trailer: ' + translation(30001), 'http://www.filmstarts.de/trailer/aktuell_im_kino.html?version=1', "showSortDirection", '')
-    addDir('Trailer: ' + translation(30002), 'http://www.filmstarts.de/trailer/bald_im_kino.html?version=1', "showSortDirection", '')
-    addDir('Filmstarts: Interviews', 'http://www.filmstarts.de/trailer/interviews/', "listVideosInterview", '')
-    addDir('Filmstarts: Fünf Sterne', 'http://www.filmstarts.de/videos/shows/funf-sterne', "listVideosMagazin", '')
-    addDir('Filmstarts: Fehlerteufel', 'http://www.filmstarts.de/videos/shows/filmstarts-fehlerteufel', "listVideosMagazin", '')
-    addDir('Meine Lieblings-Filmszene', 'http://www.filmstarts.de/videos/shows/meine-lieblings-filmszene', "listVideosMagazin", '')
-    addDir('Serien-Trailer', 'http://www.filmstarts.de/trailer/serien/', "listVideosTV", '')
+    addDir('Trailer: ' + translation(30001), BASE_URL + '/trailer/aktuell_im_kino.html?version=1', "showSortDirection", '')
+    addDir('Trailer: ' + translation(30002), BASE_URL + '/trailer/bald_im_kino.html?version=1', "showSortDirection", '')
+    addDir('Filmstarts: Interviews', BASE_URL + '/trailer/interviews/', "listVideosInterview", '')
+    addDir('Filmstarts: Fünf Sterne', BASE_URL + '/videos/shows/funf-sterne', "listVideosMagazin", '')
+    addDir('Filmstarts: Fehlerteufel', BASE_URL + '/videos/shows/filmstarts-fehlerteufel', "listVideosMagazin", '')
+    addDir('Meine Lieblings-Filmszene', BASE_URL + '/videos/shows/meine-lieblings-filmszene', "listVideosMagazin", '')
+    addDir('Serien-Trailer', BASE_URL + '/trailer/serien/', "listVideosTV", '')
     xbmcplugin.endOfDirectory(pluginhandle)
     if forceViewMode:
         xbmc.executebuiltin('Container.SetViewMode(' + viewMode + ')')
@@ -64,21 +66,21 @@ def listVideos(urlFull):
         for thumb, temp1, temp2, url, title in match:
             if showAllTrailers:
                 url = url[:url.find("/trailer/")] + "/trailers/"
-                addDir(title, 'http://www.filmstarts.de' + url, "listTrailers", get_better_thumb(thumb))
+                addDir(title, BASE_URL + url, "listTrailers", get_better_thumb(thumb))
             else:
-                addLink(title, 'http://www.filmstarts.de' + url, "playVideo", get_better_thumb(thumb))
+                addLink(title, BASE_URL + url, "playVideo", get_better_thumb(thumb))
     elif mode == "listVideosMagazin":
         if currentPage == 1:
             match = re.compile('<a href="(.+?)">\n<img src="(.+?)" alt="" />\n</a>\n</div>\n<div style="(.+?)">\n<h2 class="(.+?)" style="(.+?)"><b>(.+?)</b> (.+?)</h2><br />\n<span style="(.+?)" class="purehtml fs11">\n(.+?)<a class="btn" href="(.+?)"', re.DOTALL).findall(content)
             for temp0, thumb, temp1, temp2, temp3, temp4, title, temp5, temp6, url in match:
-                addLink(title, 'http://www.filmstarts.de' + url, "playVideo", get_better_thumb(thumb))
+                addLink(title, BASE_URL + url, "playVideo", get_better_thumb(thumb))
         match = re.compile('<img src=\'(.+?)\' alt="(.+?)" title="(.+?)" />\n</span>\n</div>\n<div class="contenzone">\n<div class="titlebar">\n<a href=\'(.+?)\' class="link">\n<span class=\'bold\'><b>(.+?)</b> (.+?)</span>', re.DOTALL).findall(content)
         for thumb, temp1, temp2, url, temp3, title in match:
-            addLink(title, 'http://www.filmstarts.de' + url, "playVideo", get_better_thumb(thumb))
+            addLink(title, BASE_URL + url, "playVideo", get_better_thumb(thumb))
     elif mode == "listVideosInterview":
         match = re.compile('<img src=\'(.+?)\'(.+?)</span>\n</div>\n<div class="contenzone">\n<div class="titlebar">\n<a(.+?)href=\'(.+?)\'>\n<span class=\'bold\'>\n(.+?)\n</span>(.+?)\n</a>', re.DOTALL).findall(content)
         for thumb, temp1, temp2, url, title1, title2 in match:
-            addLink(title1 + title2, 'http://www.filmstarts.de' + url, "playVideo", get_better_thumb(thumb))
+            addLink(title1 + title2, BASE_URL + url, "playVideo", get_better_thumb(thumb))
     elif mode == "listVideosTV":
         spl = content.split('<div class="datablock vpadding10b">')
         for i in range(1, len(spl), 1):
@@ -93,7 +95,7 @@ def listVideos(urlFull):
             else:
                 match = re.compile("<a href='(.+?)'>\n(.+?)<br />", re.DOTALL).findall(entry)
                 title = match[0][1]
-            addLink(title, 'http://www.filmstarts.de' + url, "playVideo", get_better_thumb(thumb))
+            addLink(title, BASE_URL + url, "playVideo", get_better_thumb(thumb))
     if currentPage < maxPage:
         urlNew = ""
         if mode == "listVideosTrailer":
@@ -101,8 +103,8 @@ def listVideos(urlFull):
             sortNr = sortNr[:sortNr.find('&')]
             urlNew = urlFull[:urlFull.find('?')] + "?page=" + str(currentPage + 1) + "&sort_order=" + sortNr + "&version=1"
         elif urlFull.find('?page=') >= 0 and (mode == "listVideosMagazin" or mode == "listVideosInterview" or mode == "listVideosTV"):
-            match = re.compile('http://www.filmstarts.de/(.+?)?page=(.+?)', re.DOTALL).findall(urlFull)
-            urlNew = 'http://www.filmstarts.de/' + match[0][0] + 'page=' + str(currentPage + 1)
+            match = re.compile(BASE_URL + '/(.+?)?page=(.+?)', re.DOTALL).findall(urlFull)
+            urlNew = BASE_URL + '/' + match[0][0] + 'page=' + str(currentPage + 1)
         elif urlFull.find('?page=') == -1 and (mode == "listVideosMagazin" or mode == "listVideosInterview" or mode == "listVideosTV"):
             urlNew = urlFull + "?page=" + str(currentPage + 1)
         addDir(translation(30007) + " (" + str(currentPage + 1) + ")", urlNew, mode, '')
@@ -184,7 +186,7 @@ def playVideo(url):
         typeRef = match1[0]
     elif len(match2) > 0:
         typeRef = match2[0]
-    content = getUrl('http://www.filmstarts.de/ws/AcVisiondataV4.ashx?media=' + media + '&ref=' + ref + '&typeref=' + typeRef)
+    content = getUrl(BASE_URL + '/ws/AcVisiondataV4.ashx?media=' + media + '&ref=' + ref + '&typeref=' + typeRef)
     finalUrl = ""
     match1 = re.compile('/nmedia/youtube:(.+?)"', re.DOTALL).findall(content)
     match2 = re.compile('hd_path="(.+?)"', re.DOTALL).findall(content)

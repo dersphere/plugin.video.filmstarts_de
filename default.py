@@ -102,10 +102,10 @@ def listVideos(urlFull):
             sortNr = urlFull[urlFull.find('sort_order=') + 11:]
             sortNr = sortNr[:sortNr.find('&')]
             urlNew = urlFull[:urlFull.find('?')] + "?page=" + str(currentPage + 1) + "&sort_order=" + sortNr + "&version=1"
-        elif urlFull.find('?page=') >= 0 and (mode == "listVideosMagazin" or mode == "listVideosInterview" or mode == "listVideosTV"):
+        elif urlFull.find('?page=') >= 0 and mode in ("listVideosMagazin", "listVideosInterview", "listVideosTV"):
             match = re.compile(BASE_URL + '/(.+?)?page=(.+?)', re.DOTALL).findall(urlFull)
             urlNew = BASE_URL + '/' + match[0][0] + 'page=' + str(currentPage + 1)
-        elif urlFull.find('?page=') == -1 and (mode == "listVideosMagazin" or mode == "listVideosInterview" or mode == "listVideosTV"):
+        elif urlFull.find('?page=') == -1 and mode in ("listVideosMagazin", "listVideosInterview", "listVideosTV"):
             urlNew = urlFull + "?page=" + str(currentPage + 1)
         addDir(translation(30007) + " (" + str(currentPage + 1) + ")", urlNew, mode, '')
     xbmcplugin.endOfDirectory(pluginhandle)
@@ -270,7 +270,7 @@ elif mode == "showSortDirection":
     showSortDirection(url)
 elif mode == "listTrailers":
     listTrailers(url)
-elif mode == "listVideosMagazin" or mode == "listVideosInterview" or mode == "listVideosTV" or mode == "listVideosTrailer":
+elif mode in ("listVideosMagazin", "listVideosInterview", "listVideosTV", "listVideosTrailer"):
     listVideos(url)
 elif mode == "search":
     search()

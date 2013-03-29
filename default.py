@@ -89,7 +89,7 @@ def listVideos(urlFull):
             url = match[0]
             match = re.compile("<img src='(.+?)'", re.DOTALL).findall(entry)
             thumb = match[0]
-            if entry.find("<span class='bold'>") >= 0:
+            if entry.find("<span class='bold'>"):
                 match = re.compile("<span class='bold'>(.+?)</span>(.+?)<br />", re.DOTALL).findall(entry)
                 title = match[0][0] + ' ' + match[0][1]
             else:
@@ -102,10 +102,10 @@ def listVideos(urlFull):
             sortNr = urlFull[urlFull.find('sort_order=') + 11:]
             sortNr = sortNr[:sortNr.find('&')]
             urlNew = urlFull[:urlFull.find('?')] + "?page=" + str(currentPage + 1) + "&sort_order=" + sortNr + "&version=1"
-        elif urlFull.find('?page=') >= 0 and mode in ("listVideosMagazin", "listVideosInterview", "listVideosTV"):
+        elif urlFull.find('?page=') and mode in ("listVideosMagazin", "listVideosInterview", "listVideosTV"):
             match = re.compile(BASE_URL + '/(.+?)?page=(.+?)', re.DOTALL).findall(urlFull)
             urlNew = BASE_URL + '/' + match[0][0] + 'page=' + str(currentPage + 1)
-        elif urlFull.find('?page=') == -1 and mode in ("listVideosMagazin", "listVideosInterview", "listVideosTV"):
+        elif not urlFull.find('?page=') and mode in ("listVideosMagazin", "listVideosInterview", "listVideosTV"):
             urlNew = urlFull + "?page=" + str(currentPage + 1)
         addDir(translation(30007) + " (" + str(currentPage + 1) + ")", urlNew, mode, '')
     xbmcplugin.endOfDirectory(pluginhandle)
@@ -128,7 +128,7 @@ def listTrailers(url):
             title = match[0].replace(" DF", " - " + str(translation(30009))).replace(" OV", " - " + str(translation(30010)))
             title = cleanTitle(title)
             match = re.compile('href="(.+?)"', re.DOTALL).findall(entry)
-            if len(match) > 0:
+            if match:
                 url = "http://www.filmstarts.de" + match[0]
                 addLink(title, url, 'playVideo', thumb)
     xbmcplugin.endOfDirectory(pluginhandle)
@@ -170,31 +170,31 @@ def playVideo(url):
     content = getUrl(url)
     match1 = re.compile('"cmedia" : (.+?),', re.DOTALL).findall(content)
     match2 = re.compile("cmedia: '(.+?)'", re.DOTALL).findall(content)
-    if len(match1) > 0:
+    if match1:
         media = match1[0]
-    elif len(match2) > 0:
+    elif match2:
         media = match2[0]
     match1 = re.compile('"ref" : (.+?),', re.DOTALL).findall(content)
     match2 = re.compile("ref: '(.+?)'", re.DOTALL).findall(content)
-    if len(match1) > 0:
+    if match1:
         ref = match1[0]
-    elif len(match2) > 0:
+    elif match2:
         ref = match2[0]
     match1 = re.compile('"typeRef" : "(.+?)"', re.DOTALL).findall(content)
     match2 = re.compile("typeRef: '(.+?)'", re.DOTALL).findall(content)
-    if len(match1) > 0:
+    if match1:
         typeRef = match1[0]
-    elif len(match2) > 0:
+    elif match2:
         typeRef = match2[0]
     content = getUrl(BASE_URL + '/ws/AcVisiondataV4.ashx?media=' + media + '&ref=' + ref + '&typeref=' + typeRef)
     finalUrl = ""
     match1 = re.compile('/nmedia/youtube:(.+?)"', re.DOTALL).findall(content)
     match2 = re.compile('hd_path="(.+?)"', re.DOTALL).findall(content)
-    if len(match1) > 0:
+    if match1:
         finalUrl = getYoutubeUrl(match1[0])
-    elif len(match2) > 0:
+    elif match2:
         finalUrl = match2[0]
-    if finalUrl != "":
+    if finalUrl:
         listitem = xbmcgui.ListItem(path=finalUrl)
         return xbmcplugin.setResolvedUrl(pluginhandle, True, listitem)
 

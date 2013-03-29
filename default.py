@@ -23,6 +23,7 @@ else:
     forceViewMode = False
 viewMode = str(addon.getSetting("viewMode"))
 
+
 def index():
     addDir('Trailer: ' + translation(30008),'',"search",'')
     addDir('Trailer: ' + translation(30001),'http://www.filmstarts.de/trailer/aktuell_im_kino.html?version=1',"showSortDirection",'')
@@ -36,6 +37,7 @@ def index():
     if forceViewMode == True:
         xbmc.executebuiltin('Container.SetViewMode(' + viewMode + ')')
 
+
 def showSortDirection(url):
     addDir(translation(30003),url.replace("?version=1","?sort_order=0&version=1"),"listVideosTrailer",'')
     addDir(translation(30004),url.replace("?version=1","?sort_order=1&version=1"),"listVideosTrailer",'')
@@ -44,6 +46,7 @@ def showSortDirection(url):
     xbmcplugin.endOfDirectory(pluginhandle)
     if forceViewMode == True:
         xbmc.executebuiltin('Container.SetViewMode(' + viewMode + ')')
+
 
 def listVideos(urlFull):
     content = getUrl(urlFull)
@@ -111,6 +114,7 @@ def listVideos(urlFull):
     if forceViewMode == True:
         xbmc.executebuiltin('Container.SetViewMode(' + viewMode + ')')
 
+
 def listTrailers(url):
     content = getUrl(url)
     splMain = content.split('<div class="media_list_02')
@@ -133,12 +137,14 @@ def listTrailers(url):
     if forceViewMode == True:
         xbmc.executebuiltin('Container.SetViewMode(' + viewMode + ')')
 
+
 def cleanTitle(title):
     title = title.replace("&lt;","<").replace("&gt;",">").replace("&amp;","&").replace("&#39;","'").replace("&quot;","\"").replace("&szlig;","ß").replace("&ndash;","-")
     title = title.replace("&#38;","&").replace("&#8230;","...").replace("&#8211;","-").replace("&#8220;","-").replace("&#8221;","-").replace("&#8217;","'")
     title = title.replace("&#196;","Ä").replace("&#220;","Ü").replace("&#214;","Ö").replace("&#228;","ä").replace("&#252;","ü").replace("&#246;","ö").replace("&#223;","ß").replace("&#176;","°").replace("&#233;","é").replace("&#224;","à")
     title = title.strip()
     return title
+
 
 def search():
     keyboard = xbmc.Keyboard('', str(translation(30008)))
@@ -160,6 +166,7 @@ def search():
         xbmcplugin.endOfDirectory(pluginhandle)
         if forceViewMode == True:
             xbmc.executebuiltin('Container.SetViewMode(' + viewMode + ')')
+
 
 def playVideo(url):
     content = getUrl(url)
@@ -193,12 +200,14 @@ def playVideo(url):
         listitem = xbmcgui.ListItem(path=finalUrl)
         return xbmcplugin.setResolvedUrl(pluginhandle, True, listitem)
 
+
 def getYoutubeUrl(id):
     if xbox == True:
         url = "plugin://video/YouTube/?path=/root/video&action=play_video&videoid=" + id
     else:
         url = "plugin://plugin.video.youtube/?path=/root/video&action=play_video&videoid=" + id
     return url
+
 
 def get_better_thumb(thumb_url):
     # This image provider does dynamic image modificiation
@@ -210,6 +219,7 @@ def get_better_thumb(thumb_url):
     ])
     return thumb_url
 
+
 def getUrl(url):
     req = urllib2.Request(url)
     req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:18.0) Gecko/20100101 Firefox/18.0')
@@ -217,6 +227,7 @@ def getUrl(url):
     link = response.read()
     response.close()
     return link
+
 
 def parameters_string_to_dict(parameters):
     ''' Convert parameters encoded in a URL to a dict. '''
@@ -229,6 +240,7 @@ def parameters_string_to_dict(parameters):
                 paramDict[paramSplits[0]] = paramSplits[1]
     return paramDict
 
+
 def addLink(name,url,mode,iconimage):
     u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode)
     ok = True
@@ -238,6 +250,7 @@ def addLink(name,url,mode,iconimage):
     ok = xbmcplugin.addDirectoryItem(handle = int(sys.argv[1]),url=u,listitem=liz)
     return ok
 
+
 def addDir(name,url,mode,iconimage):
     u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode)
     ok = True
@@ -245,7 +258,8 @@ def addDir(name,url,mode,iconimage):
     liz.setInfo( type="Video", infoLabels={ "Title": name } )
     ok = xbmcplugin.addDirectoryItem(handle = int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
     return ok
-         
+
+
 params = parameters_string_to_dict(sys.argv[2])
 mode = params.get('mode')
 url = params.get('url')

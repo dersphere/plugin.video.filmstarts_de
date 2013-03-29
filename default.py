@@ -260,9 +260,7 @@ def addDir(name, url, mode, iconimage):
 
 params = parameters_string_to_dict(sys.argv[2])
 mode = params.get('mode')
-url = params.get('url')
-if type(url) == type(str()):
-    url = urllib.unquote_plus(url)
+url = urllib.unquote_plus(params.get('url', ''))
 
 if mode == "playVideo":
     playVideo(url)
